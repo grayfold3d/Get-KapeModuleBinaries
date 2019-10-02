@@ -24,10 +24,9 @@
     PS C:\Tools> .\Get-KapeModuleBinaries.ps1 -ModulePath "C:\Forensic Program Files\Zimmerman\Kape\Modules" -CreateBinaryList
     Scans modules directory for mkape files, extracts URLs and dumps to console. This can be used to create a text file for use 
     with the -UseBinaryList and -BinaryList path parameters or just to verify which tools will be downloaded prior to running
-    .\Get-KapeModuleBinaries.ps1 -Dest <desired tool path> -ModulePath "<Kape Modules Path>"
 .EXAMPLE
     PS C:\Tools> .\Get-KapeModuleBinaries.ps1 -Dest "C:\Forensic Program Files\Zimmerman\Kape\Modules\Bin" -UseBinaryList -BinaryListPath C:\tools\binarylist.txt
-    Downloads/extracts and saves binaries and binary details for files specified in C:\tools\binarylist.txt to c:\tools directory.
+    Downloads/extracts and saves binaries and binary details for files specified in C:\tools\binarylist.txt to C:\Forensic Program Files\Zimmerman\Kape\Modules\Bin directory.
 .NOTES
     Author: Mike Cary
     This script is a fork of Eric Zimmerman's Get-ZimmermanTools script which has been modified to parse mkape files or other txt files for urls to download
@@ -112,7 +111,8 @@ elseif($CreateBinaryList){
     Write-Host "`nDumping list of Binary URLs to console" -BackgroundColor Blue
     try
     {
-        $mkapeContent = Get-Content $modulePath\*.mkape -ErrorAction Stop
+        $mkapePath = Get-ChildItem $modulePath -Recurse -Filter *.mkape -ErrorAction Stop
+        $mkapeContent = Get-Content $mkapePath.FullName  -ErrorAction Stop
     }
     catch
     {
@@ -132,7 +132,8 @@ else
     $progressPreference = 'silentlyContinue'
     try
     {
-        $mkapeContent = Get-Content $modulePath\*.mkape -ErrorAction Stop
+        $mkapePath = Get-ChildItem $modulePath -Recurse -Filter *.mkape -ErrorAction Stop
+        $mkapeContent = Get-Content $mkapePath.FullName  -ErrorAction Stop
     }
     catch
     {
@@ -187,6 +188,10 @@ while ($matchdetails.Success) {
         $getUrl = $matchdetails.Value
         $sha = "N/A"
         $name = $matchdetails.Value | Split-Path -Leaf
+
+        # test to verify $name doesn't contain illegal characters for a file name
+        $name = $name.split([IO.Path]::GetInvalidFileNameChars()) -join '_'
+
         $size = $headers["Content-Length"]
 
 

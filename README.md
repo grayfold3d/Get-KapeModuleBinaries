@@ -32,12 +32,16 @@ with the -UseBinaryList and -BinaryList path parameters or just to verify which 
     PS C:\Tools> .\Get-KapeModuleBinaries.ps1 -ModulePath "C:\Forensic Program Files\Zimmerman\Kape\Modules" -CreateBinaryList
 
 ### Example 3
-Downloads/extracts and saves binaries and binary details for files specified in C:\tools\binarylist.txt to c:\tools directory.
+Downloads/extracts and saves binaries and binary details for files specified in C:\tools\binarylist.txt to C:\Forensic Program Files\Zimmerman\Kape\Modules\Bin directory.
 
     PS C:\Tools> .\Get-KapeModuleBinaries.ps1 -Dest "C:\Forensic Program Files\Zimmerman\Kape\Modules\Bin" -UseBinaryList -BinaryListPath C:\tools\binarylist.txt
     
 
 ## Change log
+* 10/2/19
+    - Updated script to support new module sub-folder paths (thanks @mattnotmax)
+    - Added check for illegal file name charcters prior to saving files
+    - Fixed path typo in examples
 
 * 7/5/19
     - Modified path files are extracted to for more consistency with KAPE module paths
